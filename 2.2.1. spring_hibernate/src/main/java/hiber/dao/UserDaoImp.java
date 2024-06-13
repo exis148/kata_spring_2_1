@@ -25,11 +25,10 @@ public class UserDaoImp implements UserDao {
         sessionFactory.getCurrentSession().save(car);
     }
 
-
     @Override
     @SuppressWarnings("unchecked")
     public List<User> listUsers() {
-        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User");
+        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("SELECT u FROM User u JOIN FETCH u.userCar");
         return query.getResultList();
     }
 
@@ -43,12 +42,12 @@ public class UserDaoImp implements UserDao {
     @Override
     @SuppressWarnings("unchecked")
     public User findUserByCarModelAndSeries(String model, int series) {
-        String hql = "SELECT u FROM User u WHERE u.userCar.model = :model AND u.userCar.series = :series";
+        String hql = "SELECT u FROM User u JOIN FETCH u.userCar c WHERE c.model = :model AND c.series = :series";
         return (User) sessionFactory.getCurrentSession().createQuery(hql)
                 .setParameter("model", model)
                 .setParameter("series", series)
                 .uniqueResult();
     }
-    //public User findUserforCar(Car car) {}
 }
+
 
